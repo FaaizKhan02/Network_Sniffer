@@ -1,0 +1,153 @@
+--CODE:
+from scapy.all import sniff, IP, TCP, UDP, ICMP, Raw
+from datetime import datetime
+
+def packet_callback(packet):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{timestamp}]")
+    if IP in packet:
+        ip_src = packet[IP].src
+        ip_dst = packet[IP].dst
+        protocol = packet[IP].proto
+
+        if protocol == 6:  # TCP
+            src_port = packet[TCP].sport
+            dst_port = packet[TCP].dport
+            print(f"TCP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+        elif protocol == 17:  # UDP
+            src_port = packet[UDP].sport
+            dst_port = packet[UDP].dport
+            print(f"UDP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+        elif protocol == 1:  # ICMP
+            print(f"ICMP Packet - Src: {ip_src} -> Dst: {ip_dst}")
+        else:
+            print(f"Unknown Protocol - Src: {ip_src} -> Dst: {ip_dst}")
+
+        if packet.haslayer(Raw):
+            payload = packet[Raw].load
+            print(f"Payload: {payload.decode('utf-8', errors='ignore')}")
+
+# Start sniffing on the default interface
+sniff(prn=packet_callback, store=0)
+-----------------------------------------------------------------------
+Certainly! Let's break down the code step by step to explain what each part does. This explanation is designed for beginners to understand the code and its purpose.
+
+```python
+from scapy.all import sniff, IP, TCP, UDP, ICMP, Raw
+from datetime import datetime
+```
+
+- **Importing Libraries:**
+  - `from scapy.all import sniff, IP, TCP, UDP, ICMP, Raw`: This line imports several functions and classes from the `scapy` library. `scapy` is a powerful Python library used for network packet manipulation. The specific imports are:
+    - `sniff`: A function to capture network packets.
+    - `IP`, `TCP`, `UDP`, `ICMP`, `Raw`: Classes representing different types of network protocols and packet layers.
+  - `from datetime import datetime`: This imports the `datetime` class from Python's standard library, which we will use to get the current time.
+
+```python
+def packet_callback(packet):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{timestamp}]")
+    if IP in packet:
+        ip_src = packet[IP].src
+        ip_dst = packet[IP].dst
+        protocol = packet[IP].proto
+
+        if protocol == 6:  # TCP
+            src_port = packet[TCP].sport
+            dst_port = packet[TCP].dport
+            print(f"TCP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+        elif protocol == 17:  # UDP
+            src_port = packet[UDP].sport
+            dst_port = packet[UDP].dport
+            print(f"UDP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+        elif protocol == 1:  # ICMP
+            print(f"ICMP Packet - Src: {ip_src} -> Dst: {ip_dst}")
+        else:
+            print(f"Unknown Protocol - Src: {ip_src} -> Dst: {ip_dst}")
+
+        if packet.haslayer(Raw):
+            payload = packet[Raw].load
+            print(f"Payload: {payload.decode('utf-8', errors='ignore')}")
+```
+
+- **Defining the `packet_callback` Function:**
+  - This function is called every time a network packet is captured. It takes one argument, `packet`, which represents the captured network packet.
+
+  - **Getting the Current Time:**
+    ```python
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{timestamp}]")
+    ```
+    - `datetime.now()`: Gets the current date and time.
+    - `.strftime('%Y-%m-%d %H:%M:%S')`: Formats the date and time as a string in the format `YYYY-MM-DD HH:MM:SS`.
+    - `print(f"[{timestamp}]")`: Prints the timestamp to the console, enclosed in square brackets.
+
+  - **Checking if the Packet Contains an IP Layer:**
+    ```python
+    if IP in packet:
+    ```
+    - This checks if the captured packet contains an IP layer. Most network packets will have an IP layer, which contains source and destination IP addresses.
+
+  - **Extracting IP Addresses and Protocol:**
+    ```python
+    ip_src = packet[IP].src
+    ip_dst = packet[IP].dst
+    protocol = packet[IP].proto
+    ```
+    - `packet[IP].src`: Gets the source IP address from the IP layer of the packet.
+    - `packet[IP].dst`: Gets the destination IP address from the IP layer of the packet.
+    - `packet[IP].proto`: Gets the protocol number from the IP layer, which indicates the type of protocol used (e.g., TCP, UDP, ICMP).
+
+  - **Handling Different Protocols:**
+    ```python
+    if protocol == 6:  # TCP
+        src_port = packet[TCP].sport
+        dst_port = packet[TCP].dport
+        print(f"TCP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+    elif protocol == 17:  # UDP
+        src_port = packet[UDP].sport
+        dst_port = packet[UDP].dport
+        print(f"UDP Packet - Src: {ip_src}:{src_port} -> Dst: {ip_dst}:{dst_port}")
+    elif protocol == 1:  # ICMP
+        print(f"ICMP Packet - Src: {ip_src} -> Dst: {ip_dst}")
+    else:
+        print(f"Unknown Protocol - Src: {ip_src} -> Dst: {ip_dst}")
+    ```
+    - **TCP (Protocol 6):**
+      - Checks if the protocol is TCP (protocol number 6).
+      - Extracts the source and destination ports from the TCP layer.
+      - Prints a message indicating it's a TCP packet, along with the source and destination IP addresses and ports.
+    - **UDP (Protocol 17):**
+      - Checks if the protocol is UDP (protocol number 17).
+      - Extracts the source and destination ports from the UDP layer.
+      - Prints a message indicating it's a UDP packet, along with the source and destination IP addresses and ports.
+    - **ICMP (Protocol 1):**
+      - Checks if the protocol is ICMP (protocol number 1).
+      - Prints a message indicating it's an ICMP packet, along with the source and destination IP addresses.
+    - **Unknown Protocol:**
+      - If the protocol is not TCP, UDP, or ICMP, it prints a message indicating an unknown protocol, along with the source and destination IP addresses.
+
+  - **Handling the Payload:**
+    ```python
+    if packet.haslayer(Raw):
+        payload = packet[Raw].load
+        print(f"Payload: {payload.decode('utf-8', errors='ignore')}")
+    ```
+    - `packet.haslayer(Raw)`: Checks if the packet has a raw data layer, which contains the actual data being transmitted.
+    - `packet[Raw].load`: Gets the raw data (payload) from the packet.
+    - `payload.decode('utf-8', errors='ignore')`: Attempts to decode the payload from bytes to a string using UTF-8 encoding. If decoding fails, it ignores the errors.
+    - `print(f"Payload: {payload.decode('utf-8', errors='ignore')")`: Prints the decoded payload to the console.
+
+```python
+# Start sniffing on the default interface
+sniff(prn=packet_callback, store=0)
+```
+
+- **Starting the Packet Sniffer:**
+  - `sniff(prn=packet_callback, store=0)`: This line starts the packet sniffer.
+  - `prn=packet_callback`: Specifies the function to call for each captured packet. In this case, it's the `packet_callback` function we defined earlier.
+  - `store=0`: Indicates that the captured packets should not be stored in memory. This is useful for reducing memory usage, especially when capturing a large number of packets.
+
+### Summary
+
+This code sets up a basic network sniffer that captures network packets and prints detailed information about each packet, including the timestamp, source and destination IP addresses, protocol, ports (for TCP and UDP), and the payload. The sniffer is started on the default network interface, and the `packet_callback` function is called for each captured packet to process and print the packet details.

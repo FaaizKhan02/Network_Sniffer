@@ -1,0 +1,180 @@
+Certainly! Here’s a beginner-friendly manual for your network sniffer project, focusing on clear, step-by-step instructions and explanations.
+
+---
+
+# Network Sniffer Project Manual for Beginners
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [What You Need to Get Started](#what-you-need-to-get-started)
+3. [Setting Up Your Project](#setting-up-your-project)
+4. [Running the Network Sniffer](#running-the-network-sniffer)
+5. [Generating Network Traffic](#generating-network-traffic)
+6. [Understanding the Results](#understanding-the-results)
+7. [Common Issues and Solutions](#common-issues-and-solutions)
+8. [Where to Go from Here](#where-to-go-from-here)
+
+## Introduction
+
+Welcome to the Network Sniffer Project! This project helps you capture and analyze network traffic on your computer. It's a great way to learn about how data moves across networks and understand the basics of network protocols. Let's get started!
+
+## What You Need to Get Started
+
+- **A Computer:** With Windows, macOS, or Linux.
+- **Internet Connection:** To download necessary software.
+- **Basic Computer Skills:** Knowing how to open files, use a web browser, and run commands in a terminal.
+
+## Setting Up Your Project
+
+### Step 1: Download and Install Python
+
+1. **Go to the Python Website:**
+   - Open your web browser and visit [python.org](https://www.python.org/).
+
+2. **Download Python:**
+   - Click on the "Downloads" button and then on the "Download Python" button.
+
+3. **Install Python:**
+   - Follow the installation instructions for your operating system. Make sure to check the box that says "Add Python to PATH" during installation.
+
+### Step 2: Download and Install Visual Studio Code
+
+1. **Go to the VS Code Website:**
+   - Open your web browser and visit [code.visualstudio.com](https://code.visualstudio.com/).
+
+2. **Download VS Code:**
+   - Click on the "Download" button and follow the instructions for your operating system.
+
+3. **Install VS Code:**
+   - Follow the installation instructions. Once installed, open VS Code.
+
+### Step 3: Set Up Your Project Folder
+
+1. **Create a New Folder:**
+   - On your computer, create a new folder named `networksniffer`. You can do this by right-clicking on your desktop or in a file explorer window and selecting "New Folder".
+
+2. **Open VS Code:**
+   - Launch Visual Studio Code.
+
+3. **Open Your Project Folder in VS Code:**
+   - Go to `File > Open Folder...` and navigate to the `networksniffer` folder you just created.
+
+### Step 4: Set Up a Virtual Environment
+
+1. **Open a Terminal in VS Code:**
+   - Go to `Terminal > New Terminal` or press `` Ctrl+` `` to open a new terminal.
+
+2. **Create a Virtual Environment:**
+   - In the terminal, type the following command and press Enter:
+     ```bash
+     python3 -m venv myenv
+     ```
+
+3. **Activate the Virtual Environment:**
+   - On Windows:
+     ```bash
+     .\myenv\Scripts\activate
+     ```
+   - On macOS and Linux:
+     ```bash
+     source myenv/bin/activate
+     ```
+
+### Step 5: Install Required Libraries
+
+1. **Install Libraries:**
+   - With the virtual environment activated, type the following command and press Enter:
+     ```bash
+     pip install -r requirements.txt
+     ```
+
+## Running the Network Sniffer
+
+1. **Open a Terminal in VS Code:**
+   - Go to `Terminal > New Terminal` or press `` Ctrl+` `` to open a new terminal.
+
+2. **Activate Your Virtual Environment:**
+   - Ensure your virtual environment is activated. If it’s not, activate it using the commands provided in the "Setting Up Your Project" section.
+
+3. **Run the Script with Superuser Privileges:**
+   - Type the following command and press Enter:
+     ```bash
+     sudo python network_sniffer.py
+     ```
+
+## Generating Network Traffic
+
+To see your sniffer in action, you need to generate some network activity. Here are a few easy ways to do that:
+
+1. **Open a Web Browser:**
+   - Open your web browser and visit a few websites. This will create network traffic.
+
+2. **Use the `ping` Command:**
+   - Open a new terminal and type:
+     ```bash
+     ping google.com
+     ```
+   - Press Enter. This will send network requests to Google's servers.
+
+3. **Use the `curl` Command:**
+   - Open a new terminal and type:
+     ```bash
+     curl http://example.com
+     ```
+   - Press Enter. This will fetch a web page from `example.com`.
+
+4. **Download a File:**
+   - Open your web browser and download a file from a website. This will generate more network traffic.
+
+## Understanding the Results
+
+- **Check the Terminal Output:**
+  - While your script is running, look at the terminal where you ran `sudo python network_sniffer.py`. You should see lines of text appearing as network traffic is captured.
+
+- **What You'll See:**
+  - **Timestamp:** The date and time when the network activity was captured.
+  - **Protocol:** The type of network protocol used (like TCP, UDP, or ICMP). This tells you how the data is being sent.
+  - **Source and Destination IPs:** The IP addresses of the devices communicating with each other.
+  - **Ports:** The ports used for communication. Think of ports as doors on a device; different services use different ports.
+  - **Payload:** The actual data being sent. This could be part of a web page, a request to a server, or other types of data.
+
+- **Example Output:**
+  ```plaintext
+  [2025-10-20 04:37:29]
+  TCP Packet - Src: 192.168.1.2:54321 -> Dst: 93.184.216.34:80
+  Payload: GET / HTTP/1.1
+  Host: example.com
+  User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0
+  Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+  Accept-Language: en-US,en;q=0.5
+  Accept-Encoding: gzip, deflate, br
+  Connection: keep-alive
+  Upgrade-Insecure-Requests: 1
+  ```
+
+## Common Issues and Solutions
+
+- **Permission Error:**
+  - If you see a message about "Permission denied," make sure you are running the script with `sudo` as shown above.
+
+- **No Traffic Captured:**
+  - If you don't see any output, make sure you are generating network traffic as described in the "Generating Network Traffic" section.
+
+- **Interface Issue:**
+  - If you suspect the sniffer is not capturing traffic from the correct network interface, you might need to specify the interface. You can do this by editing the `network_sniffer.py` file and changing the `sniff` function to include the `iface` parameter, like so:
+    ```python
+    sniff(prn=packet_callback, store=0, iface="eth0")
+    ```
+    Replace `"eth0"` with the name of your network interface.
+
+## Where to Go from Here
+
+- **Explore Network Protocols:** Learn more about TCP, UDP, and ICMP to understand how data is transmitted over networks.
+- **Analyze Different Types of Traffic:** Try capturing traffic from different applications and services to see how they communicate.
+- **Enhance Your Sniffer:** Add more features to your sniffer, such as filtering traffic by protocol or saving captured packets to a file for later analysis.
+
+Congratulations on setting up and running your network sniffer! This is a great starting point for understanding network traffic and protocols. Happy sniffling!
+
+---
+
+This manual is designed to be easy to follow for beginners, providing clear instructions and explanations for each step. You can upload this manual to your GitHub repository along with your project files for others to easily follow and use.
